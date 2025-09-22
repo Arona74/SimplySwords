@@ -94,10 +94,18 @@ public class ArcanethystSwordItem extends UniqueSwordItem {
 
     @Override
     public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
-        if (HelperMethods.commonSpellAttributeScaling(spellScalingModifier, entity, "arcane") > 0) {
-            abilityDamage = HelperMethods.commonSpellAttributeScaling(spellScalingModifier, entity, "arcane");
+        // Always reset to the base config value before scaling
+        float baseAbilityDamage = Config.getFloat("arcaneAssaultDamage", "UniqueEffects", ConfigDefaultValues.arcaneAssaultDamage);
+        float scaling = HelperMethods.commonSpellAttributeScaling(spellScalingModifier, entity, "arcane");
+
+        abilityDamage = baseAbilityDamage; // reset
+        if (scaling > 0) {
+            abilityDamage += scaling;
             scalesWithSpellPower = true;
+        } else {
+            scalesWithSpellPower = false;
         }
+
         if (stepMod > 0) stepMod--;
         if (stepMod <= 0) stepMod = 7;
         HelperMethods.createFootfalls(entity, stack, world, stepMod, ParticleTypes.DRAGON_BREATH,

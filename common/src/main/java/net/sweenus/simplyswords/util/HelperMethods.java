@@ -19,6 +19,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.scoreboard.AbstractTeam;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.text.Style;
@@ -38,6 +39,8 @@ import net.sweenus.simplyswords.entity.BattleStandardDarkEntity;
 import net.sweenus.simplyswords.entity.BattleStandardEntity;
 import net.sweenus.simplyswords.registry.ItemsRegistry;
 import net.sweenus.simplyswords.registry.SoundRegistry;
+import io.icker.factions.util.FactionCompatHelper;
+import net.fabricmc.loader.api.FabricLoader;
 
 import java.util.*;
 
@@ -109,6 +112,18 @@ public class HelperMethods {
     public static boolean checkFriendlyFire(LivingEntity target, LivingEntity attacker) {
         if (!checkEntityBlacklist(target, attacker)) {
             return false;
+        }
+
+        // Factions (Fork) mod compat
+        if (FabricLoader.getInstance().isModLoaded("factions")
+            && attacker instanceof ServerPlayerEntity sp
+            && target instanceof ServerPlayerEntity lp) {
+                // Check if factions allows damage, friendly fire allowed
+                if (FactionCompatHelper.canDamage(sp, lp)) {
+                    return true; // Can damage
+                } else {
+                    return false; // Same faction or ally => no damage
+                }
         }
 
         // Check if the player and the living entity are on the same team

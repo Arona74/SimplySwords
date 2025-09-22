@@ -77,8 +77,13 @@ public class BattleStandardDarkEntity extends PathAwareEntity {
                 if (!ownerEntity.isAlive())
                     this.setHealth(this.getHealth() - 1000);
                 int radius = 6;
-                if (HelperMethods.commonSpellAttributeScaling(spellScalingModifier, ownerEntity, "soul") > 0)
-                    abilityDamage = HelperMethods.commonSpellAttributeScaling(spellScalingModifier, ownerEntity, "soul");
+                // Always reset to the base config value before scaling
+                float baseAbilityDamage = Config.getFloat("abyssalStandardDamage", "UniqueEffects", ConfigDefaultValues.abyssalStandardDamage);
+                float scaling = HelperMethods.commonSpellAttributeScaling(spellScalingModifier, ownerEntity, "soul");
+                abilityDamage = baseAbilityDamage; // reset
+                if (scaling > 0) {
+                    abilityDamage += scaling;
+                }
                 if (standardType.equals("enigma") && !this.isInvisible())
                     this.setInvisible(true);
 

@@ -91,8 +91,12 @@ public class BattleStandardEntity extends PathAwareEntity {
                 if (!ownerEntity.isAlive())
                     this.setHealth(this.getHealth() - 1000);
                 int radius = 6;
-                if (HelperMethods.commonSpellAttributeScaling(spellScalingModifier, ownerEntity, "fire") > 0) {
-                    abilityDamage = HelperMethods.commonSpellAttributeScaling(spellScalingModifier, ownerEntity, "fire");
+                // Always reset to the base config value before scaling
+                float baseAbilityDamage = Config.getFloat("righteousStandardDamage", "UniqueEffects", ConfigDefaultValues.righteousStandardDamage);
+                float scaling = HelperMethods.commonSpellAttributeScaling(spellScalingModifier, ownerEntity, "fire");
+                abilityDamage = baseAbilityDamage; // reset
+                if (scaling > 0) {
+                    abilityDamage += scaling;
                 }
                 //AOE Aura
                 if (this.age % 10 == 0) {
@@ -176,8 +180,12 @@ public class BattleStandardEntity extends PathAwareEntity {
                             this.getX() - radius, this.getY() - (float) radius / 3, this.getZ() - radius);
                     for (Entity entities : getWorld().getOtherEntities(this, box, EntityPredicates.VALID_LIVING_ENTITY)) {
                         if (entities instanceof LivingEntity le && !HelperMethods.checkFriendlyFire(le, ownerEntity)) {
-                            if (HelperMethods.commonSpellAttributeScaling(abilityHealScalingModifier, ownerEntity, "healing") > 0) {
-                                abilityHeal = HelperMethods.commonSpellAttributeScaling(abilityHealScalingModifier, ownerEntity, "healing");
+                            // Always reset to the base config value before scaling
+                            float baseAbilityHeal = 3;
+                            float scalingHeal = HelperMethods.commonSpellAttributeScaling(abilityHealScalingModifier, ownerEntity, "healing");
+                            abilityHeal = baseAbilityHeal; // reset
+                            if (scalingHeal > 0) {
+                                abilityHeal += scalingHeal;
                             }
                             //Sunfire positive effects
                             switch (standardType) {

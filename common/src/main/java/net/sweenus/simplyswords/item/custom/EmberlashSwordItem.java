@@ -39,9 +39,13 @@ public class EmberlashSwordItem extends UniqueSwordItem {
             DamageSource damageSource = world.getDamageSources().generic();
             float abilityDamage = getAttackDamage();
             float spellScalingModifier = Config.getFloat("smoulderSpellScaling", "UniqueEffects", ConfigDefaultValues.smoulderSpellScaling);
-            if (HelperMethods.commonSpellAttributeScaling(spellScalingModifier, attacker, "fire") > getAttackDamage()) {
-                abilityDamage = HelperMethods.commonSpellAttributeScaling(spellScalingModifier, attacker, "fire");
+
+            float scaling = HelperMethods.commonSpellAttributeScaling(spellScalingModifier, attacker, "fire");
+            if (scaling > getAttackDamage()) {
+                abilityDamage += scaling;
                 scalesWithSpellPower = true;
+            } else {
+                scalesWithSpellPower = false;
             }
 
             if (attacker instanceof PlayerEntity player)

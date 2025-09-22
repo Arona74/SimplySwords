@@ -137,9 +137,16 @@ public class LichbladeSwordItem extends UniqueSwordItem {
 
     @Override
     public void inventoryTick(ItemStack stack, World world, Entity user, int slot, boolean selected) {
-        if (HelperMethods.commonSpellAttributeScaling(spellScalingModifier, user, "soul") > 0) {
-            abilityDamage = HelperMethods.commonSpellAttributeScaling(spellScalingModifier, user, "soul");
+        // Always reset to the base config value before scaling
+        float baseAbilityDamage = Config.getFloat("soulAnguishDamage", "UniqueEffects", ConfigDefaultValues.soulAnguishDamage);
+        float scaling = HelperMethods.commonSpellAttributeScaling(spellScalingModifier, user, "soul");
+
+        abilityDamage = baseAbilityDamage; // reset
+        if (scaling > 0) {
+            abilityDamage += scaling;
             scalesWithSpellPower = true;
+        } else {
+            scalesWithSpellPower = false;
         }
 
         if (!user.getWorld().isClient() && user instanceof LivingEntity livingUser) {

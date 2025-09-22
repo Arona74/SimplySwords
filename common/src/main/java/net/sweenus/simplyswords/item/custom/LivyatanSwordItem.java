@@ -89,9 +89,16 @@ public class LivyatanSwordItem extends UniqueSwordItem {
 
     @Override
     public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
-        if (HelperMethods.commonSpellAttributeScaling(spellScalingModifier, entity, "frost") > 0) {
-            abilityDamage = HelperMethods.commonSpellAttributeScaling(spellScalingModifier, entity, "frost");
+        // Always reset to the base config value before scaling
+        float baseAbilityDamage = Config.getFloat("frostShatterDamage", "UniqueEffects", ConfigDefaultValues.frostShatterDamage);
+        float scaling = HelperMethods.commonSpellAttributeScaling(spellScalingModifier, entity, "frost");
+
+        abilityDamage = baseAbilityDamage; // reset
+        if (scaling > 0) {
+            abilityDamage += scaling;
             scalesWithSpellPower = true;
+        } else {
+            scalesWithSpellPower = false;
         }
         if (!world.isClient && entity instanceof PlayerEntity && shatter_timer > 0) {
             shatter_timer--;

@@ -139,9 +139,15 @@ public class VolcanicFurySwordItem extends UniqueSwordItem {
 
     @Override
     public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
-        if (HelperMethods.commonSpellAttributeScaling(spellPowerModifier, entity, "fire") > 0) {
-            abilityDamage = HelperMethods.commonSpellAttributeScaling(spellPowerModifier, entity, "fire");
+        // Always reset to the base config value before scaling
+        float baseAbilityDamage = Config.getFloat("volcanicFuryDamage", "UniqueEffects", ConfigDefaultValues.volcanicFuryDamage);
+        float scaling = HelperMethods.commonSpellAttributeScaling(spellPowerModifier, entity, "fire");
+        abilityDamage = baseAbilityDamage; // reset
+        if (scaling > 0) {
+            abilityDamage += scaling;
             scalesWithSpellPower = true;
+        } else {
+            scalesWithSpellPower = false;
         }
         if (stepMod > 0) stepMod--;
         if (stepMod <= 0) stepMod = 7;

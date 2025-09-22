@@ -42,8 +42,8 @@ public class MagistormEffect extends HighOrbitingEffect {
             int frequency = Math.max(3, 10 - amplifier);
 
             float spellScalingModifier = Config.getFloat("magistormSpellScaling", "UniqueEffects", ConfigDefaultValues.magistormSpellScaling);
-            if (HelperMethods.commonSpellAttributeScaling(spellScalingModifier, livingEntity, "arcane") > damage)
-                damage = HelperMethods.commonSpellAttributeScaling(spellScalingModifier, livingEntity, "arcane");
+            if (HelperMethods.commonSpellAttributeScaling(spellScalingModifier, livingEntity, "arcane") > 0)
+                damage += HelperMethods.commonSpellAttributeScaling(spellScalingModifier, livingEntity, "arcane");
 
             DamageSource damageSource =  livingEntity.getDamageSources().indirectMagic(livingEntity, livingEntity);
             if (livingEntity.age % frequency == 0 && livingEntity instanceof  PlayerEntity player) {
