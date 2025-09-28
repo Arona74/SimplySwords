@@ -42,6 +42,7 @@ repositories {
     maven { url = "https://jitpack.io" }
     maven { url "https://maven.shedaniel.me/" }
     maven { url "https://maven.terraformersmc.com/releases/" }
+    mavenCentral() // ✅ required for MixinExtras
 }
 
 dependencies {
@@ -71,7 +72,9 @@ dependencies {
     // Patchouli
     modImplementation "vazkii.patchouli:Patchouli:1.20.1-81-FABRIC"
 
-    modImplementation(annotationProcessor("com.github.llamalad7.mixinextras:mixinextras-fabric:${rootProject.mixin_extras_version}"))
+    // ✅ MixinExtras (official Maven Central)
+    implementation "io.github.llamalad7:mixinextras-fabric:${project.mixin_extras_version}"
+    annotationProcessor "io.github.llamalad7:mixinextras-common:${project.mixin_extras_version}"
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }

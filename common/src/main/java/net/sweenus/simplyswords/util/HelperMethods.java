@@ -12,6 +12,7 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
@@ -110,9 +111,12 @@ public class HelperMethods {
 
     //Check if we should be able to hit the target
     public static boolean checkFriendlyFire(LivingEntity target, LivingEntity attacker) {
-        if (!checkEntityBlacklist(target, attacker)) {
+        if (target == null || attacker == null)
             return false;
-        }
+        if (!checkEntityBlacklist(target, attacker))
+            return false;
+        if (target == attacker)
+            return false;
 
         // Factions (Fork) mod compat
         if (FabricLoader.getInstance().isModLoaded("factions")
@@ -159,6 +163,7 @@ public class HelperMethods {
         }
         return !(target instanceof ArmorStandEntity)
                 && !(target instanceof VillagerEntity)
+                && !(target instanceof AnimalEntity)
                 && !(target instanceof BattleStandardEntity)
                 && !(target instanceof BattleStandardDarkEntity);
     }
